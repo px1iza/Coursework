@@ -1,0 +1,15 @@
+/Users/elizavetarabirokh/Курсова/BLL/bin/Debug/net9.0/BLL.deps.json
+/Users/elizavetarabirokh/Курсова/BLL/bin/Debug/net9.0/BLL.dll
+/Users/elizavetarabirokh/Курсова/BLL/bin/Debug/net9.0/BLL.pdb
+/Users/elizavetarabirokh/Курсова/BLL/bin/Debug/net9.0/DAL.dll
+/Users/elizavetarabirokh/Курсова/BLL/bin/Debug/net9.0/DAL.pdb
+/Users/elizavetarabirokh/Курсова/BLL/obj/Debug/net9.0/BLL.csproj.AssemblyReference.cache
+/Users/elizavetarabirokh/Курсова/BLL/obj/Debug/net9.0/BLL.GeneratedMSBuildEditorConfig.editorconfig
+/Users/elizavetarabirokh/Курсова/BLL/obj/Debug/net9.0/BLL.AssemblyInfoInputs.cache
+/Users/elizavetarabirokh/Курсова/BLL/obj/Debug/net9.0/BLL.AssemblyInfo.cs
+/Users/elizavetarabirokh/Курсова/BLL/obj/Debug/net9.0/BLL.csproj.CoreCompileInputs.cache
+/Users/elizavetarabirokh/Курсова/BLL/obj/Debug/net9.0/BLL.csproj.Up2Date
+/Users/elizavetarabirokh/Курсова/BLL/obj/Debug/net9.0/BLL.dll
+/Users/elizavetarabirokh/Курсова/BLL/obj/Debug/net9.0/refint/BLL.dll
+/Users/elizavetarabirokh/Курсова/BLL/obj/Debug/net9.0/BLL.pdb
+/Users/elizavetarabirokh/Курсова/BLL/obj/Debug/net9.0/ref/BLL.dll

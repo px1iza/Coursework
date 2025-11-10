@@ -1,0 +1,11 @@
+/Users/elizavetarabirokh/Курсова/DAL/bin/Debug/net9.0/DAL.deps.json
+/Users/elizavetarabirokh/Курсова/DAL/bin/Debug/net9.0/DAL.dll
+/Users/elizavetarabirokh/Курсова/DAL/bin/Debug/net9.0/DAL.pdb
+/Users/elizavetarabirokh/Курсова/DAL/obj/Debug/net9.0/DAL.GeneratedMSBuildEditorConfig.editorconfig
+/Users/elizavetarabirokh/Курсова/DAL/obj/Debug/net9.0/DAL.AssemblyInfoInputs.cache
+/Users/elizavetarabirokh/Курсова/DAL/obj/Debug/net9.0/DAL.AssemblyInfo.cs
+/Users/elizavetarabirokh/Курсова/DAL/obj/Debug/net9.0/DAL.csproj.CoreCompileInputs.cache
+/Users/elizavetarabirokh/Курсова/DAL/obj/Debug/net9.0/DAL.dll
+/Users/elizavetarabirokh/Курсова/DAL/obj/Debug/net9.0/refint/DAL.dll
+/Users/elizavetarabirokh/Курсова/DAL/obj/Debug/net9.0/DAL.pdb
+/Users/elizavetarabirokh/Курсова/DAL/obj/Debug/net9.0/ref/DAL.dll
