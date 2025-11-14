@@ -1,8 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DAL.DataProvider;
 using DAL.Entities;
 using BLL.Models;
+using BLL.Exceptions;
+using BLL.Validation;
+using DAL.Interfaces;
 
 namespace BLL.Services
 {
@@ -13,8 +17,15 @@ namespace BLL.Services
 
         public DocumentService(IDataProvider<Document> documentProvider)
         {
-            _documentProvider = documentProvider;
-            _documents = _documentProvider.Load().Select(ConvertToBLL).ToList();
+            _documentProvider = documentProvider ?? throw new ArgumentNullException(nameof(documentProvider));
+            try
+            {
+                _documents = _documentProvider.Load().Select(ConvertToBLL).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new LibraryException($"Помилка завантаження документів: {ex.Message}");
+            }
         }
 
         private DocumentBLL ConvertToBLL(Document d) => new DocumentBLL
@@ -33,34 +44,65 @@ namespace BLL.Services
 
         private void Save()
         {
-            _documentProvider.Save(_documents.Select(ConvertToDAL).ToList());
+            try
+            {
+                _documentProvider.Save(_documents.Select(ConvertToDAL).ToList());
+            }
+            catch (Exception ex)
+            {
+                throw new LibraryException($"Помилка збереження документів: {ex.Message}");
+            }
         }
 
         public void AddDocument(DocumentBLL doc)
         {
+            DocumentValidator.Validate(doc);
+
+            if (_documents.Any(d => d.Title.Equals(doc.Title, StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new ValidationException($"Документ з назвою '{doc.Title}' вже існує");
+            }
+
             _documents.Add(doc);
             Save();
         }
 
         public void RemoveDocument(DocumentBLL doc)
         {
+            if (doc == null)
+                throw new ArgumentNullException(nameof(doc));
+
+            if (!_documents.Contains(doc))
+                throw new EntityNotFoundException("Документ не знайдено");
+
+            if (doc.IsBorrowed)
+                throw new LibraryException("Неможливо видалити виданий документ");
+
             _documents.Remove(doc);
             Save();
         }
 
         public void UpdateDocument(DocumentBLL oldDoc, DocumentBLL newDoc)
         {
+            if (oldDoc == null || newDoc == null)
+                throw new ArgumentNullException("Документ не може бути null");
+
+            DocumentValidator.Validate(newDoc);
+
             int index = _documents.IndexOf(oldDoc);
-            if (index != -1)
-            {
-                _documents[index] = newDoc;
-                Save();
-            }
+            if (index == -1)
+                throw new EntityNotFoundException("Документ не знайдено");
+
+            _documents[index] = newDoc;
+            Save();
         }
 
         public DocumentBLL? GetDocument(string title)
         {
-            return _documents.FirstOrDefault(d => d.Title.Equals(title, System.StringComparison.OrdinalIgnoreCase));
+            if (string.IsNullOrWhiteSpace(title))
+                throw new ValidationException("Назва не може бути порожньою");
+
+            return _documents.FirstOrDefault(d => d.Title.Equals(title, StringComparison.OrdinalIgnoreCase));
         }
 
         public List<DocumentBLL> GetAllDocuments() => _documents;

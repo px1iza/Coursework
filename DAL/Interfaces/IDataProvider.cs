@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
-
-public interface IDataProvider<T>
+namespace DAL.Interfaces
 {
-    void Save(List<T> items);
-    List<T> Load();
+    public interface IDataProvider<T>
+    {
+        void Save(List<T> items);
+        List<T> Load();
+    }
 }

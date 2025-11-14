@@ -9,3 +9,4 @@
 /Users/elizavetarabirokh/Курсова/DAL/obj/Debug/net9.0/refint/DAL.dll
 /Users/elizavetarabirokh/Курсова/DAL/obj/Debug/net9.0/DAL.pdb
 /Users/elizavetarabirokh/Курсова/DAL/obj/Debug/net9.0/ref/DAL.dll
+/Users/elizavetarabirokh/Курсова/DAL/obj/Debug/net9.0/DAL.sourcelink.json

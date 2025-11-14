@@ -4,6 +4,9 @@ using System.Linq;
 using DAL.DataProvider;
 using DAL.Entities;
 using BLL.Models;
+using BLL.Exceptions;
+using BLL.Validation;
+using DAL.Interfaces;
 
 namespace BLL.Services
 {
@@ -14,8 +17,15 @@ namespace BLL.Services
 
         public UserService(IDataProvider<User> userProvider)
         {
-            _userProvider = userProvider;
-            _users = _userProvider.Load().Select(ConvertToBLL).ToList();
+            _userProvider = userProvider ?? throw new ArgumentNullException(nameof(userProvider));
+            try
+            {
+                _users = _userProvider.Load().Select(ConvertToBLL).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new LibraryException($"Помилка завантаження користувачів: {ex.Message}");
+            }
         }
 
         private UserBLL ConvertToBLL(User u) => new UserBLL
@@ -33,33 +43,65 @@ namespace BLL.Services
 
         private void Save()
         {
-            _userProvider.Save(_users.Select(ConvertToDAL).ToList());
+            try
+            {
+                _userProvider.Save(_users.Select(ConvertToDAL).ToList());
+            }
+            catch (Exception ex)
+            {
+                throw new LibraryException($"Помилка збереження користувачів: {ex.Message}");
+            }
         }
 
         public void AddUser(UserBLL user)
         {
+            UserValidator.Validate(user);
+
+            if (_users.Any(u => u.FirstName.Equals(user.FirstName, StringComparison.OrdinalIgnoreCase) &&
+                               u.LastName.Equals(user.LastName, StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new ValidationException($"Користувач {user.FirstName} {user.LastName} вже існує");
+            }
+
             _users.Add(user);
             Save();
         }
 
         public void RemoveUser(UserBLL user)
         {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            if (!_users.Contains(user))
+                throw new EntityNotFoundException("Користувача не знайдено");
+
+            if (user.BorrowedDocumentTitles.Count > 0)
+                throw new LibraryException("Неможливо видалити користувача, який має взяті документи");
+
             _users.Remove(user);
             Save();
         }
 
         public void UpdateUser(UserBLL oldUser, UserBLL updatedUser)
         {
+            if (oldUser == null || updatedUser == null)
+                throw new ArgumentNullException("Користувач не може бути null");
+
+            UserValidator.Validate(updatedUser);
+
             int index = _users.IndexOf(oldUser);
-            if (index != -1)
-            {
-                _users[index] = updatedUser;
-                Save();
-            }
+            if (index == -1)
+                throw new EntityNotFoundException("Користувача не знайдено");
+
+            _users[index] = updatedUser;
+            Save();
         }
 
         public UserBLL? GetUser(string firstName, string lastName)
         {
+            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
+                throw new ValidationException("Ім'я та прізвище не можуть бути порожніми");
+
             return _users.FirstOrDefault(u =>
                 u.FirstName.Equals(firstName, StringComparison.OrdinalIgnoreCase) &&
                 u.LastName.Equals(lastName, StringComparison.OrdinalIgnoreCase));

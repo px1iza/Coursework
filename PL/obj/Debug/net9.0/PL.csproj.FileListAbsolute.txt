@@ -18,3 +18,4 @@
 /Users/elizavetarabirokh/Курсова/PL/obj/Debug/net9.0/PL.pdb
 /Users/elizavetarabirokh/Курсова/PL/obj/Debug/net9.0/PL.genruntimeconfig.cache
 /Users/elizavetarabirokh/Курсова/PL/obj/Debug/net9.0/ref/PL.dll
+/Users/elizavetarabirokh/Курсова/PL/obj/Debug/net9.0/PL.sourcelink.json

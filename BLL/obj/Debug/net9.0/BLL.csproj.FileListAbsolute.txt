@@ -13,3 +13,4 @@
 /Users/elizavetarabirokh/Курсова/BLL/obj/Debug/net9.0/refint/BLL.dll
 /Users/elizavetarabirokh/Курсова/BLL/obj/Debug/net9.0/BLL.pdb
 /Users/elizavetarabirokh/Курсова/BLL/obj/Debug/net9.0/ref/BLL.dll
+/Users/elizavetarabirokh/Курсова/BLL/obj/Debug/net9.0/BLL.sourcelink.json
