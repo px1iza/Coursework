@@ -5,12 +5,13 @@ using BLL.Exceptions;
 
 namespace PL
 {
-    class Program
+    public class Menu
     {
-        static UserService userService = ServiceFactory.CreateUserService();
-        static DocumentService documentService = ServiceFactory.CreateDocumentService();
-        static LibraryService libraryService = ServiceFactory.CreateLibraryService();
-        static void Main(string[] args)
+        private readonly UserService userService = ServiceFactory.CreateUserService();
+        private readonly DocumentService documentService = ServiceFactory.CreateDocumentService();
+        private readonly LibraryService libraryService = ServiceFactory.CreateLibraryService();
+
+        public void Run()
         {
             while (true)
             {
@@ -33,24 +34,28 @@ namespace PL
                     case "0": return;
                     default: Console.WriteLine("Невірний вибір."); break;
                 }
+
                 Console.WriteLine("\nНатисніть Enter...");
                 Console.ReadLine();
             }
         }
 
-        static void UserMenu()
+        // ---------------- USER MENU ----------------
+
+        private void UserMenu()
         {
             Console.Clear();
             Console.WriteLine("=== Користувачі ===");
-            Console.WriteLine("1. Додати користувача");
-            Console.WriteLine("2. Видалити користувача");
-            Console.WriteLine("3. Змінити дані користувача");
-            Console.WriteLine("4. Переглянути користувача");
+            Console.WriteLine("1. Додати");
+            Console.WriteLine("2. Видалити");
+            Console.WriteLine("3. Змінити");
+            Console.WriteLine("4. Переглянути");
             Console.WriteLine("5. Переглянути всіх");
             Console.WriteLine("6. Сортувати за ім'ям");
             Console.WriteLine("7. Сортувати за прізвищем");
             Console.WriteLine("8. Сортувати за групою");
             Console.Write("Виберіть дію: ");
+
             string choice = Console.ReadLine() ?? "";
 
             try
@@ -71,24 +76,19 @@ namespace PL
             catch (LibraryException ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Помилка: {ex.Message}");
-                Console.ResetColor();
-            }
-            catch (Exception ex)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Непередбачена помилка: {ex.Message}");
+                Console.WriteLine(ex.Message);
                 Console.ResetColor();
             }
         }
 
-        static void AddUser()
+        private void AddUser()
         {
             Console.Write("Ім'я: ");
             string firstName = Console.ReadLine() ?? "";
             Console.Write("Прізвище: ");
             string lastName = Console.ReadLine() ?? "";
             Console.Write("Група: ");
+
             if (!int.TryParse(Console.ReadLine(), out int group))
             {
                 Console.WriteLine("Група має бути числом");
@@ -97,72 +97,67 @@ namespace PL
 
             var user = new UserBLL { FirstName = firstName, LastName = lastName, Group = group };
             userService.AddUser(user);
-            Console.WriteLine("✓ Користувача додано");
+            Console.WriteLine("✓ Додано");
         }
 
-        static void RemoveUser()
+        private void RemoveUser()
         {
             var user = FindUserByInput();
             if (user != null)
             {
                 userService.RemoveUser(user);
-                Console.WriteLine("✓ Користувача видалено");
+                Console.WriteLine("✓ Видалено");
             }
         }
 
-        static void UpdateUser()
+        private void UpdateUser()
         {
             var oldUser = FindUserByInput();
-            if (oldUser != null)
+            if (oldUser == null) return;
+
+            Console.Write("Нове ім'я: ");
+            string fn = Console.ReadLine() ?? "";
+            Console.Write("Нове прізвище: ");
+            string ln = Console.ReadLine() ?? "";
+            Console.Write("Нова група: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int group))
             {
-                Console.Write("Нове ім'я: ");
-                string firstName = Console.ReadLine() ?? "";
-                Console.Write("Нове прізвище: ");
-                string lastName = Console.ReadLine() ?? "";
-                Console.Write("Нова група: ");
-                if (!int.TryParse(Console.ReadLine(), out int group))
-                {
-                    Console.WriteLine("Група має бути числом");
-                    return;
-                }
-
-                var updatedUser = new UserBLL
-                {
-                    FirstName = firstName,
-                    LastName = lastName,
-                    Group = group,
-                    BorrowedDocumentTitles = oldUser.BorrowedDocumentTitles
-                };
-
-                userService.UpdateUser(oldUser, updatedUser);
-                Console.WriteLine("✓ Дані оновлено");
+                Console.WriteLine("Група має бути числом");
+                return;
             }
+
+            var updated = new UserBLL
+            {
+                FirstName = fn,
+                LastName = ln,
+                Group = group,
+                BorrowedDocumentTitles = oldUser.BorrowedDocumentTitles
+            };
+
+            userService.UpdateUser(oldUser, updated);
+            Console.WriteLine("✓ Оновлено");
         }
 
-        static void ViewUser()
+        private void ViewUser()
         {
             var user = FindUserByInput();
-            if (user != null)
-            {
-                Console.WriteLine($"Ім'я: {user.FirstName}, Прізвище: {user.LastName}, Група: {user.Group}");
-                if (user.BorrowedDocumentTitles.Count > 0)
-                {
-                    Console.WriteLine("Взяті документи:");
-                    foreach (var title in user.BorrowedDocumentTitles)
-                        Console.WriteLine($"- {title}");
-                }
-                else Console.WriteLine("Немає взятих документів");
-            }
+            if (user == null) return;
+
+            Console.WriteLine($"{user.FirstName} {user.LastName}, Група: {user.Group}");
+            if (user.BorrowedDocumentTitles.Count == 0)
+                Console.WriteLine("Документів немає");
+            else
+                foreach (var t in user.BorrowedDocumentTitles) Console.WriteLine($"- {t}");
         }
 
-        static void ViewAllUsers()
+        private void ViewAllUsers()
         {
-            var users = userService.GetAllUsers();
-            foreach (var u in users)
+            foreach (var u in userService.GetAllUsers())
                 Console.WriteLine($"{u.FirstName} {u.LastName}, Група: {u.Group}");
         }
 
-        static void ViewSortedUsers(string sortBy)
+        private void ViewSortedUsers(string sortBy)
         {
             var users = sortBy switch
             {
@@ -171,31 +166,24 @@ namespace PL
                 "group" => userService.SortByGroup(),
                 _ => userService.GetAllUsers()
             };
+
             foreach (var u in users)
                 Console.WriteLine($"{u.FirstName} {u.LastName}, Група: {u.Group}");
         }
 
-        static UserBLL? FindUserByInput()
+        private UserBLL? FindUserByInput()
         {
-            try
-            {
-                Console.Write("Ім'я: ");
-                string firstName = Console.ReadLine() ?? "";
-                Console.Write("Прізвище: ");
-                string lastName = Console.ReadLine() ?? "";
-                var user = userService.GetUser(firstName, lastName);
-                if (user == null)
-                    Console.WriteLine("Користувача не знайдено");
-                return user;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Помилка: {ex.Message}");
-                return null;
-            }
+            Console.Write("Ім'я: ");
+            string fn = Console.ReadLine() ?? "";
+            Console.Write("Прізвище: ");
+            string ln = Console.ReadLine() ?? "";
+
+            return userService.GetUser(fn, ln);
         }
 
-        static void DocumentMenu()
+        // ---------------- DOCUMENT MENU ----------------
+
+        private void DocumentMenu()
         {
             Console.Clear();
             Console.WriteLine("=== Документи ===");
@@ -207,41 +195,34 @@ namespace PL
             Console.WriteLine("6. Сортувати за назвою");
             Console.WriteLine("7. Сортувати за автором");
             Console.Write("Виберіть: ");
+
             string choice = Console.ReadLine() ?? "";
 
-            try
+            switch (choice)
             {
-                switch (choice)
-                {
-                    case "1": AddDocument(); break;
-                    case "2": RemoveDocument(); break;
-                    case "3": UpdateDocument(); break;
-                    case "4": ViewDocument(); break;
-                    case "5": ViewAllDocuments(); break;
-                    case "6": ViewSortedDocuments("title"); break;
-                    case "7": ViewSortedDocuments("author"); break;
-                }
-            }
-            catch (LibraryException ex)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Помилка: {ex.Message}");
-                Console.ResetColor();
+                case "1": AddDocument(); break;
+                case "2": RemoveDocument(); break;
+                case "3": UpdateDocument(); break;
+                case "4": ViewDocument(); break;
+                case "5": ViewAllDocuments(); break;
+                case "6": ViewSortedDocuments("title"); break;
+                case "7": ViewSortedDocuments("author"); break;
             }
         }
 
-        static void AddDocument()
+        private void AddDocument()
         {
             Console.Write("Назва: ");
             string title = Console.ReadLine() ?? "";
             Console.Write("Автор: ");
             string author = Console.ReadLine() ?? "";
+
             var doc = new DocumentBLL { Title = title, Author = author };
             documentService.AddDocument(doc);
             Console.WriteLine("✓ Додано");
         }
 
-        static void RemoveDocument()
+        private void RemoveDocument()
         {
             var doc = FindDocumentByInput();
             if (doc != null)
@@ -251,73 +232,62 @@ namespace PL
             }
         }
 
-        static void UpdateDocument()
+        private void UpdateDocument()
         {
-            var oldDoc = FindDocumentByInput();
-            if (oldDoc != null)
+            var old = FindDocumentByInput();
+            if (old == null) return;
+
+            Console.Write("Нова назва: ");
+            string title = Console.ReadLine() ?? "";
+            Console.Write("Новий автор: ");
+            string author = Console.ReadLine() ?? "";
+
+            var updated = new DocumentBLL
             {
-                Console.Write("Нова назва: ");
-                string title = Console.ReadLine() ?? "";
-                Console.Write("Новий автор: ");
-                string author = Console.ReadLine() ?? "";
-                var newDoc = new DocumentBLL
-                {
-                    Title = title,
-                    Author = author,
-                    IsBorrowed = oldDoc.IsBorrowed,
-                    BorrowedByName = oldDoc.BorrowedByName
-                };
-                documentService.UpdateDocument(oldDoc, newDoc);
-                Console.WriteLine("✓ Оновлено");
-            }
+                Title = title,
+                Author = author,
+                IsBorrowed = old.IsBorrowed,
+                BorrowedByName = old.BorrowedByName
+            };
+
+            documentService.UpdateDocument(old, updated);
+            Console.WriteLine("✓ Оновлено");
         }
 
-        static void ViewDocument()
+        private void ViewDocument()
         {
             var doc = FindDocumentByInput();
-            if (doc != null)
-            {
-                string status = doc.IsBorrowed ? $"Виданий {doc.BorrowedByName}" : "У бібліотеці";
-                Console.WriteLine($"{doc.Title} - {doc.Author}, {status}");
-            }
+            if (doc == null) return;
+
+            string status = doc.IsBorrowed ? $"Виданий {doc.BorrowedByName}" : "У бібліотеці";
+            Console.WriteLine($"{doc.Title} - {doc.Author}, {status}");
         }
 
-        static void ViewAllDocuments()
+        private void ViewAllDocuments()
         {
-            var docs = documentService.GetAllDocuments();
-            foreach (var d in docs)
+            foreach (var d in documentService.GetAllDocuments())
             {
                 string status = d.IsBorrowed ? $"(Виданий {d.BorrowedByName})" : "(У бібліотеці)";
                 Console.WriteLine($"{d.Title} - {d.Author} {status}");
             }
         }
 
-        static void ViewSortedDocuments(string sortBy)
+        private void ViewSortedDocuments(string sortBy)
         {
             var docs = sortBy == "title" ? documentService.SortByTitle() : documentService.SortByAuthor();
-            foreach (var d in docs)
-                Console.WriteLine($"{d.Title} - {d.Author}");
+            foreach (var d in docs) Console.WriteLine($"{d.Title} - {d.Author}");
         }
 
-        static DocumentBLL? FindDocumentByInput()
+        private DocumentBLL? FindDocumentByInput()
         {
-            try
-            {
-                Console.Write("Назва: ");
-                string title = Console.ReadLine() ?? "";
-                var doc = documentService.GetDocument(title);
-                if (doc == null)
-                    Console.WriteLine("Документ не знайдено");
-                return doc;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Помилка: {ex.Message}");
-                return null;
-            }
+            Console.Write("Назва: ");
+            string title = Console.ReadLine() ?? "";
+            return documentService.GetDocument(title);
         }
 
-        static void LibraryMenu()
+        // ---------------- LIBRARY MENU ----------------
+
+        private void LibraryMenu()
         {
             Console.Clear();
             Console.WriteLine("=== Видача ===");
@@ -326,27 +296,19 @@ namespace PL
             Console.WriteLine("3. Документи користувача");
             Console.WriteLine("4. Статус документа");
             Console.Write("Виберіть: ");
+
             string choice = Console.ReadLine() ?? "";
 
-            try
+            switch (choice)
             {
-                switch (choice)
-                {
-                    case "1": BorrowDocument(); break;
-                    case "2": ReturnDocument(); break;
-                    case "3": DocumentsOfUser(); break;
-                    case "4": DocumentStatus(); break;
-                }
-            }
-            catch (LibraryException ex)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Помилка: {ex.Message}");
-                Console.ResetColor();
+                case "1": BorrowDocument(); break;
+                case "2": ReturnDocument(); break;
+                case "3": DocumentsOfUser(); break;
+                case "4": DocumentStatus(); break;
             }
         }
 
-        static void BorrowDocument()
+        private void BorrowDocument()
         {
             var user = FindUserByInput();
             var doc = FindDocumentByInput();
@@ -357,7 +319,7 @@ namespace PL
             }
         }
 
-        static void ReturnDocument()
+        private void ReturnDocument()
         {
             var user = FindUserByInput();
             var doc = FindDocumentByInput();
@@ -368,58 +330,63 @@ namespace PL
             }
         }
 
-        static void DocumentsOfUser()
+        private void DocumentsOfUser()
         {
             var user = FindUserByInput();
-            if (user != null)
-            {
-                var docs = libraryService.GetBorrowedByUser(user);
-                if (docs.Count == 0) Console.WriteLine("Немає документів");
-                else foreach (var d in docs) Console.WriteLine($"{d.Title} - {d.Author}");
-            }
+            if (user == null) return;
+
+            var docs = libraryService.GetBorrowedByUser(user);
+            if (docs.Count == 0) Console.WriteLine("Порожньо");
+            else foreach (var d in docs) Console.WriteLine($"{d.Title} - {d.Author}");
         }
 
-        static void DocumentStatus()
+        private void DocumentStatus()
         {
             var doc = FindDocumentByInput();
             if (doc != null)
                 Console.WriteLine(libraryService.GetDocumentStatus(doc));
         }
 
-        static void SearchMenu()
+        // ---------------- SEARCH ----------------
+
+        private void SearchMenu()
         {
             Console.Clear();
             Console.WriteLine("=== Пошук ===");
             Console.WriteLine("1. Користувачі");
             Console.WriteLine("2. Документи");
             Console.Write("Виберіть: ");
+
             string choice = Console.ReadLine() ?? "";
 
-            switch (choice)
-            {
-                case "1": SearchUsers(); break;
-                case "2": SearchDocuments(); break;
-            }
+            if (choice == "1") SearchUsers();
+            else if (choice == "2") SearchDocuments();
         }
 
-        static void SearchUsers()
+        private void SearchUsers()
         {
             Console.Write("Ключове слово: ");
             string key = Console.ReadLine() ?? "";
-            var results = userService.GetAllUsers().FindAll(u =>
-                u.FirstName.Contains(key, StringComparison.OrdinalIgnoreCase) ||
-                u.LastName.Contains(key, StringComparison.OrdinalIgnoreCase));
+
+            var results = userService
+                .GetAllUsers()
+                .FindAll(u => u.FirstName.Contains(key, StringComparison.OrdinalIgnoreCase)
+                           || u.LastName.Contains(key, StringComparison.OrdinalIgnoreCase));
+
             if (results.Count == 0) Console.WriteLine("Не знайдено");
             else foreach (var u in results) Console.WriteLine($"{u.FirstName} {u.LastName}");
         }
 
-        static void SearchDocuments()
+        private void SearchDocuments()
         {
             Console.Write("Ключове слово: ");
             string key = Console.ReadLine() ?? "";
-            var results = documentService.GetAllDocuments().FindAll(d =>
-                d.Title.Contains(key, StringComparison.OrdinalIgnoreCase) ||
-                d.Author.Contains(key, StringComparison.OrdinalIgnoreCase));
+
+            var results = documentService
+                .GetAllDocuments()
+                .FindAll(d => d.Title.Contains(key, StringComparison.OrdinalIgnoreCase)
+                           || d.Author.Contains(key, StringComparison.OrdinalIgnoreCase));
+
             if (results.Count == 0) Console.WriteLine("Не знайдено");
             else foreach (var d in results) Console.WriteLine($"{d.Title} - {d.Author}");
         }
