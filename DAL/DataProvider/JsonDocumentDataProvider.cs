@@ -8,38 +8,34 @@ namespace DAL.DataProvider
 {
     public class JsonDocumentDataProvider : IDataProvider<Document>
     {
-        private readonly string documentsFilePath;
+        private readonly string _fileName = "documents.json";
+        private readonly string _basePath = "../../../Result/";
 
         public JsonDocumentDataProvider()
         {
-            // Базова директорія проєкту (де запускається PL)
-            string baseDirectory = Directory.GetCurrentDirectory();
-
-            // Папка Result всередині PL
-            string resultFolder = Path.Combine(baseDirectory, "Result");
-
-            // Створюємо папку, якщо її немає
+            string resultFolder = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), _basePath));
             if (!Directory.Exists(resultFolder))
                 Directory.CreateDirectory(resultFolder);
-
-            // Файл документів
-            documentsFilePath = Path.Combine(resultFolder, "documents.json");
-
-            // Якщо файл не існує — створюємо порожній JSON
-            if (!File.Exists(documentsFilePath))
-                File.WriteAllText(documentsFilePath, "[]");
         }
 
         public void Save(List<Document> documents)
         {
+            string fullPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), _basePath, _fileName));
             string json = JsonSerializer.Serialize(documents, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(documentsFilePath, json);
+            File.WriteAllText(fullPath, json);
         }
 
         public List<Document> Load()
         {
-            if (!File.Exists(documentsFilePath)) return new List<Document>();
-            string json = File.ReadAllText(documentsFilePath);
+            string fullPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), _basePath, _fileName));
+
+            if (!File.Exists(fullPath))
+            {
+                File.WriteAllText(fullPath, "[]");
+                return new List<Document>();
+            }
+
+            string json = File.ReadAllText(fullPath);
             return JsonSerializer.Deserialize<List<Document>>(json) ?? new List<Document>();
         }
     }

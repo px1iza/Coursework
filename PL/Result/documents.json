@@ -1,0 +1,32 @@
+[
+  {
+    "Title": "1984",
+    "Author": "George Orwell",
+    "IsBorrowed": false,
+    "BorrowedByName": null
+  },
+  {
+    "Title": "Pride and Prejudice",
+    "Author": "Jane Austen",
+    "IsBorrowed": false,
+    "BorrowedByName": null
+  },
+  {
+    "Title": "Harry Potter",
+    "Author": "J.K. Rowling",
+    "IsBorrowed": false,
+    "BorrowedByName": null
+  },
+  {
+    "Title": "The Great Gatsby",
+    "Author": "F. Scott Fitzgerald",
+    "IsBorrowed": false,
+    "BorrowedByName": null
+  },
+  {
+    "Title": "\u041F\u0456\u0441\u043B\u044F",
+    "Author": "\u0410\u043D\u043D\u0430 \u0422\u043E\u0434\u0434",
+    "IsBorrowed": false,
+    "BorrowedByName": null
+  }
+]

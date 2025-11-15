@@ -1,0 +1,32 @@
+[
+  {
+    "FirstName": "Liza ",
+    "LastName": "Rabirokh",
+    "Group": 2,
+    "BorrowedDocumentTitles": []
+  },
+  {
+    "FirstName": "Olena",
+    "LastName": "Rabirokh",
+    "Group": 3,
+    "BorrowedDocumentTitles": []
+  },
+  {
+    "FirstName": "Roman",
+    "LastName": "Rabirokh",
+    "Group": 2,
+    "BorrowedDocumentTitles": []
+  },
+  {
+    "FirstName": "Nastya",
+    "LastName": "Petrusenko",
+    "Group": 2,
+    "BorrowedDocumentTitles": []
+  },
+  {
+    "FirstName": "\u041D\u0430\u0442\u0430\u043B\u0456\u044F",
+    "LastName": "\u0412\u043E\u043B\u0438\u043D\u0435\u0446\u044C",
+    "Group": 1,
+    "BorrowedDocumentTitles": []
+  }
+]

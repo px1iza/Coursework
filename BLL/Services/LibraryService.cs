@@ -59,11 +59,16 @@ namespace BLL.Services
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            return user.BorrowedDocumentTitles
-                .Select(title => _documentService.GetDocument(title))
-                .Where(d => d != null)
-                .Cast<DocumentBLL>()
-                .ToList();
+            var borrowedDocuments = new List<DocumentBLL>();
+
+            foreach (var title in user.BorrowedDocumentTitles)
+            {
+                var doc = _documentService.GetDocument(title);
+                if (doc != null)
+                    borrowedDocuments.Add(doc);
+            }
+
+            return borrowedDocuments;
         }
 
         public string GetDocumentStatus(DocumentBLL doc)
