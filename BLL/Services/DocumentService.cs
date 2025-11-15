@@ -96,7 +96,6 @@ namespace BLL.Services
             _documents[index] = newDoc;
             Save();
         }
-
         public DocumentBLL? GetDocument(string title)
         {
             if (string.IsNullOrWhiteSpace(title))

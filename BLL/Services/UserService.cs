@@ -57,12 +57,14 @@ namespace BLL.Services
         {
             UserValidator.Validate(user);
 
-            if (_users.Any(u => u.FirstName.Equals(user.FirstName, StringComparison.OrdinalIgnoreCase) &&
-                               u.LastName.Equals(user.LastName, StringComparison.OrdinalIgnoreCase)))
+            foreach (var u in _users)
             {
-                throw new ValidationException($"Користувач {user.FirstName} {user.LastName} вже існує");
+                if (string.Equals(u.FirstName, user.FirstName, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(u.LastName, user.LastName, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new ValidationException($"Користувач {user.FirstName} {user.LastName} вже існує");
+                }
             }
-
             _users.Add(user);
             Save();
         }
@@ -96,15 +98,20 @@ namespace BLL.Services
             _users[index] = updatedUser;
             Save();
         }
-
         public UserBLL? GetUser(string firstName, string lastName)
         {
             if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
                 throw new ValidationException("Ім'я та прізвище не можуть бути порожніми");
 
-            return _users.FirstOrDefault(u =>
-                u.FirstName.Equals(firstName, StringComparison.OrdinalIgnoreCase) &&
-                u.LastName.Equals(lastName, StringComparison.OrdinalIgnoreCase));
+            foreach (var user in _users)
+            {
+                if (string.Equals(user.FirstName, firstName, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(user.LastName, lastName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return user;
+                }
+            }
+            return null;
         }
 
         public List<UserBLL> GetAllUsers() => _users;
