@@ -107,6 +107,7 @@ namespace BLL.Services
             {
                 if (string.Equals(user.FirstName, firstName, StringComparison.OrdinalIgnoreCase) &&
                     string.Equals(user.LastName, lastName, StringComparison.OrdinalIgnoreCase))
+
                 {
                     return user;
                 }

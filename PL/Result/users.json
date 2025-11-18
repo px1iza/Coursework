@@ -1,12 +1,10 @@
 [
   {
-    "FirstName": "Liza ",
+    "FirstName": "Liza",
     "LastName": "Rabirokh",
     "Group": 2,
     "BorrowedDocumentTitles": [
-      "1984",
       "Pride and Prejudice",
-      "Harry Potter",
       "The Great Gatsby",
       "\u041F\u0456\u0441\u043B\u044F"
     ]
@@ -21,7 +19,9 @@
     "FirstName": "Roman",
     "LastName": "Rabirokh",
     "Group": 2,
-    "BorrowedDocumentTitles": []
+    "BorrowedDocumentTitles": [
+      "\u0411\u043E\u0442"
+    ]
   },
   {
     "FirstName": "Nastya",
