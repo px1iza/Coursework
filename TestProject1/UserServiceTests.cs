@@ -8,7 +8,6 @@ namespace TestProject1;
 
 public class UserServiceTests
 {
-    // Допоміжний метод для створення ізольованого сервісу
     private UserService CreateIsolatedService()
     {
         string tempDir = Path.Combine(Path.GetTempPath(), "LibraryTest_" + Guid.NewGuid());
@@ -18,9 +17,6 @@ public class UserServiceTests
         IDataProvider<User> provider = new TestUserProvider(usersPath);
         return new UserService(provider);
     }
-
-    //  ТЕСТИ НА ДОДАВАННЯ КОРИСТУВАЧА (100% покриття)
-
     [Fact]
     public void AddUser_ValidUser_AddsSuccessfully()
     {
@@ -115,9 +111,6 @@ public class UserServiceTests
 
         Assert.Throws<ValidationException>(() => service.AddUser(user2));
     }
-
-    //  ТЕСТИ НА ВИДАЛЕННЯ (50% покриття) 
-
     [Fact]
     public void RemoveUser_ExistingUser_RemovesSuccessfully()
     {
@@ -153,9 +146,6 @@ public class UserServiceTests
 
         Assert.Throws<LibraryException>(() => service.RemoveUser(user));
     }
-
-    // ТЕСТИ НА ОНОВЛЕННЯ (50% покриття) 
-
     [Fact]
     public void UpdateUser_ValidData_UpdatesSuccessfully()
     {
@@ -184,9 +174,6 @@ public class UserServiceTests
         Assert.Equal("Петро", result.FirstName);
         Assert.Equal("Іваненко", result.LastName);
     }
-
-    //  ТЕСТИ НА ПОШУК (50% покриття) 
-
     [Fact]
     public void GetUser_ExistingUser_ReturnsUser()
     {
@@ -209,30 +196,22 @@ public class UserServiceTests
     [Fact]
     public void GetUser_NonExistingUser_ReturnsNull()
     {
-
         var service = CreateIsolatedService();
 
-
         var result = service.GetUser("Неіснуючий", "Користувач");
-
 
         Assert.Null(result);
     }
 
-    //ТЕСТИ НА СОРТУВАННЯ (50% покриття) 
-
     [Fact]
     public void SortByFirstName_MultipleUsers_ReturnsSortedList()
     {
-        // Arrange
         var service = CreateIsolatedService();
         service.AddUser(new UserBLL { FirstName = "Liza", LastName = "Rabirokh", Group = 1 });
         service.AddUser(new UserBLL { FirstName = "Roman", LastName = "Rabirokh", Group = 1 });
 
-        // Act
         var result = service.SortByFirstName();
 
-        // Assert
         Assert.Equal("Liza", result[0].FirstName);
         Assert.Equal("Roman", result[1].FirstName);
     }
@@ -251,8 +230,6 @@ public class UserServiceTests
         Assert.Equal(3, result[1].Group);
     }
 }
-
-// Тестовий провайдер (замість реального файлу)
 public class TestUserProvider : IDataProvider<User>
 {
     private List<User> _data = new();

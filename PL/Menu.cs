@@ -12,11 +12,9 @@ namespace PL
         private readonly LibraryService libraryService;
         public Menu()
         {
-            // 3. Створюємо сервіси ТІЛЬКИ ОДИН РАЗ
             userService = ServiceFactory.CreateUserService();
             documentService = ServiceFactory.CreateDocumentService();
 
-            // 4. Передаємо ВЖЕ СТВОРЕНІ сервіси в LibraryService
             libraryService = new LibraryService(userService, documentService);
         }
 
@@ -35,7 +33,6 @@ namespace PL
 
                 string choice = Console.ReadLine() ?? "";
 
-                // Перенесемо try-catch сюди, щоб він ловив *всі* помилки
                 try
                 {
                     switch (choice)
@@ -52,7 +49,7 @@ namespace PL
                             break;
                     }
                 }
-                catch (LibraryException ex) // Ловимо тільки наші кастомні помилки
+                catch (LibraryException ex)
                 {
                     Console.WriteLine($"\nПОМИЛКА: {ex.Message}");
                 }
@@ -65,9 +62,6 @@ namespace PL
                 Console.ReadLine();
             }
         }
-
-        // ---------------- USER MENU ----------------
-
         private void UserMenu()
         {
             Console.Clear();
@@ -84,7 +78,6 @@ namespace PL
 
             string choice = Console.ReadLine() ?? "";
 
-            // Блок try-catch перенесено нагору, тут він не потрібен
             switch (choice)
             {
                 case "1": AddUser(); break;
@@ -98,7 +91,6 @@ namespace PL
                 default: Console.WriteLine("Невірний вибір"); break;
             }
         }
-
         private void AddUser()
         {
             Console.Write("Ім'я: ");
@@ -109,7 +101,6 @@ namespace PL
 
             if (!int.TryParse(Console.ReadLine(), out int group))
             {
-                // Покращена валідація в PL (Вимога 4)
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Група має бути числом");
                 Console.ResetColor();
@@ -118,7 +109,7 @@ namespace PL
 
             var user = new UserBLL { FirstName = firstName, LastName = lastName, Group = group };
             userService.AddUser(user);
-            Console.WriteLine("✓ Додано");
+            Console.WriteLine("Додано");
         }
 
         private void RemoveUser()
@@ -127,7 +118,7 @@ namespace PL
             if (user != null)
             {
                 userService.RemoveUser(user);
-                Console.WriteLine("✓ Видалено");
+                Console.WriteLine("Видалено");
             }
         }
 
@@ -168,7 +159,7 @@ namespace PL
             };
 
             userService.UpdateUser(oldUser, updated);
-            Console.WriteLine("✓ Оновлено");
+            Console.WriteLine("Оновлено");
         }
 
         private void ViewUser()
@@ -222,9 +213,6 @@ namespace PL
             foreach (var u in users)
                 Console.WriteLine($"{u.FirstName} {u.LastName}, Група: {u.Group}");
         }
-
-        // --- ОНОВЛЕНИЙ МЕТОД ---
-        // Тепер він показує список для вибору
         private UserBLL? FindUserByInput(string prompt)
         {
             var users = userService.GetAllUsers();
@@ -248,7 +236,6 @@ namespace PL
             }
             return users[index - 1];
         }
-        // ---------------- DOCUMENT MENU ----------------
         private void DocumentMenu()
         {
             Console.Clear();
@@ -321,7 +308,6 @@ namespace PL
             documentService.UpdateDocument(old, updated);
             Console.WriteLine("Оновлено");
         }
-        // --- ОНОВЛЕНИЙ МЕТОД ---
         private void ViewDocument()
         {
             var doc = FindDocumentByInput("Оберіть документ для детального перегляду:");
@@ -333,7 +319,7 @@ namespace PL
             Console.WriteLine($"Назва:  {doc.Title}");
             Console.WriteLine($"Автор:  {doc.Author}");
             Console.WriteLine($"Статус: {status}");
-            Console.WriteLine($"--------------------------");
+            Console.WriteLine($"-------------------");
         }
 
         private void ViewAllDocuments()
@@ -361,7 +347,6 @@ namespace PL
             }
             foreach (var d in docs) Console.WriteLine($"{d.Title} - {d.Author}");
         }
-        // Тепер він показує список для вибору
         private DocumentBLL? FindDocumentByInput(string prompt)
         {
             var docs = documentService.GetAllDocuments();
@@ -387,9 +372,6 @@ namespace PL
 
             return docs[index - 1];
         }
-
-        // ---------------- LIBRARY MENU ----------------
-
         private void LibraryMenu()
         {
             Console.Clear();
@@ -410,7 +392,6 @@ namespace PL
                 case "4": DocumentStatus(); break;
             }
         }
-
         private void BorrowDocument()
         {
             var user = FindUserByInput("Оберіть користувача, який бере документ:");
@@ -420,7 +401,7 @@ namespace PL
             if (doc == null) return;
 
             libraryService.BorrowDocument(user, doc);
-            Console.WriteLine($"✓ Документ '{doc.Title}' видано користувачу {user.FirstName}.");
+            Console.WriteLine($"Документ '{doc.Title}' видано користувачу {user.FirstName}.");
         }
 
         private void ReturnDocument()
@@ -451,9 +432,6 @@ namespace PL
             if (doc != null)
                 Console.WriteLine(libraryService.GetDocumentStatus(doc));
         }
-
-        // ---------------- SEARCH ----------------
-
         private void SearchMenu()
         {
             Console.Clear();

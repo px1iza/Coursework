@@ -67,9 +67,6 @@ public class DocumentServiceTests
 
         Assert.Throws<ValidationException>(() => service.AddDocument(doc2));
     }
-
-    // ТЕСТИ НА ВИДАЛЕННЯ (50% покриття) 
-
     [Fact]
     public void RemoveDocument_ExistingDocument_RemovesSuccessfully()
     {
@@ -100,9 +97,6 @@ public class DocumentServiceTests
 
         Assert.Throws<LibraryException>(() => service.RemoveDocument(doc));
     }
-
-    //ТЕСТИ НА ПОШУК (50% покриття)
-
     [Fact]
     public void GetDocument_ExistingTitle_ReturnsDocument()
     {
@@ -119,7 +113,6 @@ public class DocumentServiceTests
         Assert.NotNull(result);
         Assert.Equal("Кобзар", result.Title);
     }
-
     [Fact]
     public void GetDocument_NonExistingTitle_ReturnsNull()
     {
@@ -129,7 +122,6 @@ public class DocumentServiceTests
 
         Assert.Null(result);
     }
-
     [Fact]
     public void SortByTitle_MultipleDocuments_ReturnsSortedList()
     {
@@ -142,9 +134,6 @@ public class DocumentServiceTests
         Assert.Equal("Після", result[0].Title);
         Assert.Equal("Четверте крило", result[1].Title);
     }
-
-    //ТЕСТ НА ОНОВЛЕННЯ (50% покриття) 
-
     [Fact]
     public void UpdateDocument_ValidData_UpdatesSuccessfully()
     {
@@ -168,8 +157,6 @@ public class DocumentServiceTests
         Assert.Equal("Нова назва", result.Title);
     }
 }
-
-// Тестовий провайдер для документів
 public class TestDocumentProvider : IDataProvider<Document>
 {
     private List<Document> _data = new();

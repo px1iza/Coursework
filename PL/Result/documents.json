@@ -2,30 +2,36 @@
   {
     "Title": "1984",
     "Author": "George Orwell",
-    "IsBorrowed": false,
-    "BorrowedByName": null
+    "IsBorrowed": true,
+    "BorrowedByName": "Liza  Rabirokh"
   },
   {
     "Title": "Pride and Prejudice",
     "Author": "Jane Austen",
-    "IsBorrowed": false,
-    "BorrowedByName": null
+    "IsBorrowed": true,
+    "BorrowedByName": "Liza  Rabirokh"
   },
   {
     "Title": "Harry Potter",
     "Author": "J.K. Rowling",
-    "IsBorrowed": false,
-    "BorrowedByName": null
+    "IsBorrowed": true,
+    "BorrowedByName": "Liza  Rabirokh"
   },
   {
     "Title": "The Great Gatsby",
     "Author": "F. Scott Fitzgerald",
-    "IsBorrowed": false,
-    "BorrowedByName": null
+    "IsBorrowed": true,
+    "BorrowedByName": "Liza  Rabirokh"
   },
   {
     "Title": "\u041F\u0456\u0441\u043B\u044F",
     "Author": "\u0410\u043D\u043D\u0430 \u0422\u043E\u0434\u0434",
+    "IsBorrowed": true,
+    "BorrowedByName": "Liza  Rabirokh"
+  },
+  {
+    "Title": "\u0411\u043E\u0442",
+    "Author": "\u041C\u0430\u043A\u0441 \u041A\u0456\u0434\u0440\u0443\u043A",
     "IsBorrowed": false,
     "BorrowedByName": null
   }
